@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        /*editing input */
+        input[type=text], select {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0 0 5px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type=submit] {
+            width: 100%;
+            background-color: #84a9ac;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type=submit]:hover {
+            background-color: #84a9acd8;
+        }
+        /*Setting modal over div, and by default it is hidden*/
+        .modal{
+            position: absolute;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+            z-index: 10;
+            margin: 5% 20% 0 20%;
+            width: 60%;
+        }
+        #myModal {
+            display: none;
+        }
+        .modal:hover{
+            -webkit-box-shadow: 0px 0px 5px 3px rgba(199,199,199, 0.6);
+            -moz-box-shadow: 0px 0px 5px 3px rgba(199,199,199, 0.6);
+            box-shadow: 0px 0px 5px 3px rgba(199,199,199, 0.6);
+        }
+        #container{
+            margin-top: 3%;
+            width: 95%;
+            position: relative;
+        }
+    </style>
+    <title>Library</title>
+</head>
+<body>
+    <div id="container">
+        <div id="myModal" class="modal">
+                <br />
+                <label for="title">title:</label>
+                <input type="text" id="title" name="book_title">
+
+                <label for="author">author:</label>
+                <input type="text" id="author" name="book_author">
+
+                <label for="numOfPages">numOfPages: </label>
+                <input type="text" id="numOfPages" name="book_numOfPages">
+
+                <label for="isRead">isRead:</label>
+                <input type="text" id="isRead" name="book_isRead">
+
+                <input type="submit" value="Submit" id="submitButton">
+        </div>
+        <button id='add'>Add book</button>
+    </div>  
+    <script>
+        const container = document.querySelector('#container');
+        const addBtn = document.querySelector('#add');//creating add button
+        let formDiv = document.querySelector('#myModal');//creatinf fromDiv
+        const submitButton = document.querySelector("#submitButton");
+
+        let library = [];
+        function Book(title, author, numOfPages, isRead){
+            this.title = title;
+            this.author = author;
+            this.numOfPages = numOfPages;
+            this.isRead = isRead;
+
+            this.info = function(){
+                return `${this.title} by ${this.author}, ${this.numOfPages} pages, ${this.isRead}`;
+            }
+        }
+        //Creatin book and adding it to lirbary array
+        function addBookToLibrary(book){
+            if (library.includes(book.info()) == false) {
+                library.push(book.info());
+            }
+        }
+
+        //rendering library array and puttin infos on the screen
+        function render(library){
+            let paragraphs = document.querySelectorAll('p');
+            let paragraphsArr = [];
+
+            paragraphs.forEach((paragraph) => {
+                paragraphsArr.push(paragraph.getAttribute('id'));
+            });
+            for (let index = 0; index < library.length; index++) {
+                if ((paragraphsArr.includes(index.toString())) == false){
+                    createParagraph(index);
+                }
+            } 
+        }   
+
+        function createParagraph(index){
+            const div = document.createElement('div');
+            div.setAttribute('id', 'bookDiv');
+            const para = document.createElement('p');
+            para.setAttribute('id', `${index}`);
+            para.textContent = library[index];
+            div.appendChild(para);
+            container.appendChild(div);
+        }
+
+        addBtn.addEventListener('click', ()=> {
+            formDiv.setAttribute('style','display:block');
+        });
+
+        submitButton.addEventListener('click', () => {
+            let title= document.getElementById('title').value;
+            let author= document.getElementById('author').value;
+            let numOfPages= document.getElementById('numOfPages').value;
+            let isRead= document.getElementById('isRead').value;
+            let newBook = new Book(title, author, numOfPages, isRead);
+            addBookToLibrary(newBook);
+            render(library);
+            formDiv.setAttribute('style','display:none');
+        });
+        render(library);
+    </script>
+</body>
+</html>
